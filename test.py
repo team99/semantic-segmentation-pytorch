@@ -52,7 +52,7 @@ def visualize_result(data, pred, cfg):
         os.path.join(cfg.TEST.result, img_name.replace('.jpg', '.png')))
 
 
-def test(segmentation_module, loader, gpu):
+def test(segmentation_module, loader, gpu=None):
     segmentation_module.eval()
 
     pbar = tqdm(total=len(loader))
@@ -92,7 +92,10 @@ def test(segmentation_module, loader, gpu):
 
 
 def main(cfg, gpu):
-    torch.cuda.set_device(gpu)
+    if torch.cuda.is_available():
+        torch.cuda.set_device(gpu)
+    else:
+        torch.set_num_threads(1)
 
     # Network Builders
     net_encoder = ModelBuilder.build_encoder(
@@ -122,10 +125,14 @@ def main(cfg, gpu):
         num_workers=5,
         drop_last=True)
 
-    segmentation_module.cuda()
+    if torch.cuda.is_available():
+        segmentation_module.cuda()
+    else:
+        segmentation_module.cpu()
 
     # Main loop
-    test(segmentation_module, loader_test, gpu)
+    test(segmentation_module, loader_test)
+    # test(segmentation_module, loader_test, gpu)
 
     print('Inference done!')
 

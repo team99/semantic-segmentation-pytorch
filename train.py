@@ -29,7 +29,11 @@ def train(segmentation_module, iterator, optimizers, history, epoch, cfg):
     tic = time.time()
     for i in range(cfg.TRAIN.epoch_iters):
         # load a batch of data
-        batch_data = next(iterator)
+        # batch_data = next(iterator)
+        batch_data = next(iterator)[0]
+        for k in batch_data.keys():
+            batch_data[k] = batch_data[k].cpu()
+
         data_time.update(time.time() - tic)
         segmentation_module.zero_grad()
 
@@ -140,6 +144,9 @@ def adjust_learning_rate(optimizers, cur_iter, cfg):
 
 
 def main(cfg, gpus):
+    if not torch.cuda.is_available():
+        torch.set_num_threads(1)
+
     # Network Builders
     net_encoder = ModelBuilder.build_encoder(
         arch=cfg.MODEL.arch_encoder.lower(),
@@ -187,7 +194,11 @@ def main(cfg, gpus):
             device_ids=gpus)
         # For sync bn
         patch_replication_callback(segmentation_module)
-    segmentation_module.cuda()
+
+    if torch.cuda.is_available():
+        segmentation_module.cuda()
+    else:
+        segmentation_module.cpu()
 
     # Set up optimizers
     nets = (net_encoder, net_decoder, crit)

@@ -58,8 +58,14 @@ class BaseDataset(torch.utils.data.Dataset):
         return img
 
     def segm_transform(self, segm):
-        # to tensor, -1 to 149
-        segm = torch.from_numpy(np.array(segm)).long() - 1
+        # to tensor, 0 to 150 for the default dataset (150 classes)
+        # for ours, 0 background, 1 for watermark (2 class)
+        # the segm input value is 0 to 255)
+        # we need to change it to 0 to 1
+        segm = np.array(segm)
+        segm = np.where(segm>=1, 0, segm)
+        # Original
+        segm = torch.from_numpy(segm).long() - 1
         return segm
 
     # Round x to the nearest multiple of p and x' >= x
@@ -158,7 +164,7 @@ class TrainDataset(BaseDataset):
             segm_path = os.path.join(self.root_dataset, this_record['fpath_segm'])
 
             img = Image.open(image_path).convert('RGB')
-            segm = Image.open(segm_path)
+            segm = Image.open(segm_path).convert('L')
             assert(segm.mode == "L")
             assert(img.size[0] == segm.size[0])
             assert(img.size[1] == segm.size[1])
@@ -214,7 +220,7 @@ class ValDataset(BaseDataset):
         image_path = os.path.join(self.root_dataset, this_record['fpath_img'])
         segm_path = os.path.join(self.root_dataset, this_record['fpath_segm'])
         img = Image.open(image_path).convert('RGB')
-        segm = Image.open(segm_path)
+        segm = Image.open(segm_path).convert('L')
         assert(segm.mode == "L")
         assert(img.size[0] == segm.size[0])
         assert(img.size[1] == segm.size[1])

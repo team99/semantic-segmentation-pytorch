@@ -28,22 +28,28 @@ class SegmentationModule(SegmentationModuleBase):
 
     def forward(self, feed_dict, *, segSize=None):
         # training
+        img_data = feed_dict['img_data']
+        seg_label = feed_dict['seg_label']
+        if torch.cuda.is_available():
+            img_data = img_data.cuda()
+            seg_label = seg_label.cuda()
+
         if segSize is None:
             if self.deep_sup_scale is not None: # use deep supervision technique
-                (pred, pred_deepsup) = self.decoder(self.encoder(feed_dict['img_data'], return_feature_maps=True))
+                (pred, pred_deepsup) = self.decoder(self.encoder(img_data, return_feature_maps=True))
             else:
-                pred = self.decoder(self.encoder(feed_dict['img_data'], return_feature_maps=True))
+                pred = self.decoder(self.encoder(img_data, return_feature_maps=True))
 
-            loss = self.crit(pred, feed_dict['seg_label'])
+            loss = self.crit(pred, seg_label)
             if self.deep_sup_scale is not None:
-                loss_deepsup = self.crit(pred_deepsup, feed_dict['seg_label'])
+                loss_deepsup = self.crit(pred_deepsup, seg_label)
                 loss = loss + loss_deepsup * self.deep_sup_scale
 
-            acc = self.pixel_acc(pred, feed_dict['seg_label'])
+            acc = self.pixel_acc(pred, seg_label)
             return loss, acc
         # inference
         else:
-            pred = self.decoder(self.encoder(feed_dict['img_data'], return_feature_maps=True), segSize=segSize)
+            pred = self.decoder(self.encoder(img_data, return_feature_maps=True), segSize=segSize)
             return pred
 
 

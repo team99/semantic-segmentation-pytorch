@@ -34,11 +34,4 @@ python3 -u test.py \
   TEST.result ./ \
   TEST.checkpoint epoch_20.pth
 
-python3 -u test.py \
-  --imgs watermark_data/vietnam/images/validation \
-  --cfg config/vietnam-resnet50dilated-ppm_deepsup.yaml \
-  DIR ckpt/vietnam-resnet50dilated-ppm_deepsup \
-  TEST.result watermark_data/vietnam/output/validation \
-  TEST.checkpoint epoch_1.pth
-
 fi

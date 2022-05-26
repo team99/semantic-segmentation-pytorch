@@ -32,7 +32,10 @@ def train(segmentation_module, iterator, optimizers, history, epoch, cfg):
         # batch_data = next(iterator)
         batch_data = next(iterator)[0]
         for k in batch_data.keys():
-            batch_data[k] = batch_data[k].cpu()
+            if torch.cuda.is_available():
+                batch_data[k] = batch_data[k].cuda()
+            else:
+                batch_data[k] = batch_data[k].cpu()
 
         data_time.update(time.time() - tic)
         segmentation_module.zero_grad()

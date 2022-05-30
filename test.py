@@ -118,10 +118,10 @@ def main(cfg, gpu):
         use_softmax=True)
 
     # For multi class prediction, use negative log likelihood loss
-    # crit = nn.NLLLoss(ignore_index=-1)
+    crit = nn.NLLLoss(ignore_index=-1)
 
-    # For 1 class prediction, use binary cross entrophy loss
-    crit = nn.BCELoss()
+    # For 1 class prediction, use binary cross entrophy loss (Not working)
+    # crit = nn.BCELoss()
 
     segmentation_module = SegmentationModule(net_encoder, net_decoder, crit)
 

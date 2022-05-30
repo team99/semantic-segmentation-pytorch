@@ -63,7 +63,7 @@ class BaseDataset(torch.utils.data.Dataset):
         # the segm input value is 0 to 255)
         # we need to change it to 0 to 1
         segm = np.array(segm)
-        segm = np.where(segm>=1, 151, segm)
+        # segm = np.where(segm>=1, 151, segm)
         # Original
         segm = torch.from_numpy(segm).long() - 1
         return segm

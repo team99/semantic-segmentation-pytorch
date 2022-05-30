@@ -26,7 +26,6 @@ with open('data/object150_info.csv') as f:
     for row in reader:
         names[int(row[0])] = row[5].split(";")[0]
 
-
 def visualize_result(data, pred, cfg):
     (img, info) = data
 

@@ -133,8 +133,7 @@ def main(cfg, gpu):
         segmentation_module.cpu()
 
     # Main loop
-    test(segmentation_module, loader_test)
-    # test(segmentation_module, loader_test, gpu)
+    test(segmentation_module, loader_test, gpu)
 
     print('Inference done!')
 

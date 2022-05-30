@@ -65,7 +65,7 @@ class BaseDataset(torch.utils.data.Dataset):
         segm = np.array(segm)
         segm = np.where(segm>=1, 1, segm)
         # Original
-        segm = torch.from_numpy(segm).long() - 1
+        segm = torch.from_numpy(segm).long()
         return segm
 
     # Round x to the nearest multiple of p and x' >= x

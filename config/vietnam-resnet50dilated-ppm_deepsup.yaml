@@ -2,7 +2,7 @@ DATASET:
   root_dataset: "."
   list_train: "./watermark_data/vietnam_training.odgt"
   list_val: "./watermark_data/vietnam_validation.odgt"
-  num_class: 1
+  num_class: 2
   imgSizes: (300, 375, 450, 525, 600)
   imgMaxSize: 1000
   padding_constant: 8

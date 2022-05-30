@@ -161,7 +161,11 @@ def main(cfg, gpus):
         num_class=cfg.DATASET.num_class,
         weights=cfg.MODEL.weights_decoder)
 
-    crit = nn.NLLLoss(ignore_index=-1)
+    # For multi class prediction, use negative log likelihood loss
+    # crit = nn.NLLLoss(ignore_index=-1)
+
+    # For 1 class prediction, use binary cross entrophy loss
+    crit = nn.BCELoss()
 
     if cfg.MODEL.arch_decoder.endswith('deepsup'):
         segmentation_module = SegmentationModule(

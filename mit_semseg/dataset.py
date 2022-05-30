@@ -58,12 +58,12 @@ class BaseDataset(torch.utils.data.Dataset):
         return img
 
     def segm_transform(self, segm):
-        # to tensor, 0 to 150 for the default dataset (150 classes)
+        # to tensor, 0 to 151 for the default dataset (150 classes)
         # for ours, 0 background, 1 for watermark (2 class)
         # the segm input value is 0 to 255)
         # we need to change it to 0 to 1
         segm = np.array(segm)
-        segm = np.where(segm>=1, 151, segm)
+        segm = np.where(segm>=1, 1, segm)
         # Original
         segm = torch.from_numpy(segm).long() - 1
         return segm
@@ -163,8 +163,8 @@ class TrainDataset(BaseDataset):
             image_path = os.path.join(self.root_dataset, this_record['fpath_img'])
             segm_path = os.path.join(self.root_dataset, this_record['fpath_segm'])
 
-            img = Image.open(image_path).convert('RGB')
-            segm = Image.open(segm_path).convert('L')
+            img = Image.open(image_path).convert('RGB') # 3 channel
+            segm = Image.open(segm_path).convert('L') # 1 channel
             assert(segm.mode == "L")
             assert(img.size[0] == segm.size[0])
             assert(img.size[1] == segm.size[1])

@@ -26,10 +26,15 @@ with open('data/object150_info.csv') as f:
     for row in reader:
         names[int(row[0])] = row[5].split(";")[0]
 
-# Add watermark name and color
-watermark_color = [255,255,255]
-colors = np.vstack([colors, watermark_color]).astype('uint8')
-names[151] = 'watermark'
+watermark_color = [255,0,0] # red color
+
+# Add watermark name and color as last index (151)
+# colors = np.vstack([colors, watermark_color]).astype('uint8')
+# names[151] = 'watermark'
+
+# Add watermark name and color as first index (0)
+colors[0] = watermark_color
+names[1] = 'watermark'
 
 def visualize_result(data, pred, cfg):
     (img, info) = data
@@ -49,7 +54,8 @@ def visualize_result(data, pred, cfg):
     pred_color = colorEncode(pred, colors).astype(np.uint8)
 
     # aggregate images and save
-    im_vis = np.concatenate((img, pred_color), axis=1)
+    im_vis = pred_color.copy() # only show the annotation image
+    # im_vis = np.concatenate((img, pred_color), axis=1)
 
     img_name = info.split('/')[-1]
     Image.fromarray(im_vis).save(

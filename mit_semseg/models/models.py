@@ -466,7 +466,8 @@ class PPMDeepsup(nn.Module):
             nn.Conv2d(fc_dim+len(pool_scales)*512, 512,
                       kernel_size=3, padding=1, bias=False),
             BatchNorm2d(512),
-            nn.ReLU(inplace=True),
+            nn.Sigmoid(), # Change activation last layer to sigmoid
+            # nn.ReLU(inplace=True),
             nn.Dropout2d(0.1),
             nn.Conv2d(512, num_class, kernel_size=1)
         )

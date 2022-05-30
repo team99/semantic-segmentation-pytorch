@@ -15,7 +15,7 @@ def async_copy_to(obj, dev, main_stream=None):
         if dev is None:
             v = obj.cpu()
         else:
-            v = obj.cuda(dev, non_blocking=True)
+            v = obj.cuda(non_blocking=True)
 
         if main_stream is not None:
             v.data.record_stream(main_stream)

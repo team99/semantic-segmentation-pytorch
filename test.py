@@ -26,6 +26,10 @@ with open('data/object150_info.csv') as f:
     for row in reader:
         names[int(row[0])] = row[5].split(";")[0]
 
+# Add watermark name and color
+watermark_color = [255,255,255]
+colors = np.vstack([colors, watermark_color]).astype('uint8')
+names[151] = 'watermark'
 
 def visualize_result(data, pred, cfg):
     (img, info) = data
@@ -92,9 +96,7 @@ def test(segmentation_module, loader, gpu=None):
 
 
 def main(cfg, gpu):
-    if torch.cuda.is_available():
-        torch.cuda.set_device(gpu)
-    else:
+    if not torch.cuda.is_available():
         torch.set_num_threads(1)
 
     # Network Builders

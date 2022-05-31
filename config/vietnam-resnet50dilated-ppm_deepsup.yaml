@@ -36,7 +36,7 @@ VAL:
   checkpoint: "epoch_1.pth"
 
 TEST:
-  checkpoint: "epoch_50.pth"
+  checkpoint: "epoch_100.pth"
   result: "watermark_data/vietnam/output/validation"
 
 DIR: "ckpt/vietnam-resnet50dilated-ppm_deepsup"

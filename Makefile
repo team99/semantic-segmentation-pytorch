@@ -2,7 +2,7 @@ PYTHON = 3.7.13
 PIP = $(shell which pip3)
 WORKDIR = $(shell pwd)
 GPU = 1
-CKPT = vietnam-resnet50dilated-ppm_deepsup
+CKPT = vietnam-resnet101dilated-ppm_deepsup
 CONFIG = $(CKPT).yaml
 
 

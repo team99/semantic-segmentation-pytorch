@@ -62,10 +62,19 @@ class BaseDataset(torch.utils.data.Dataset):
         # for ours, 0 background, 1 for watermark (2 class)
         # the segm input value is 0 to 255)
         # we need to change it to 0 to 1
+
+        # convert all pixel value to 0 and 1 with threshold of 50
+        threshold = 50
+        segm = segm.point(lambda p: p > threshold and 1)
         segm = np.array(segm)
-        segm = np.where(segm>=1, 1, segm)
-        # Original
+
+        # convert all pixel value to 0 and 1 with threshold of 1
+        # segm = np.array(segm)
+        # segm = np.where(segm>=1, 1, segm)
+
         segm = torch.from_numpy(segm).long()
+        # Original
+        # segm = torch.from_numpy(segm).long() - 1
         return segm
 
     # Round x to the nearest multiple of p and x' >= x

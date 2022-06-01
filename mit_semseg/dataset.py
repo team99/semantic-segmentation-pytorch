@@ -65,8 +65,9 @@ class BaseDataset(torch.utils.data.Dataset):
 
         # convert all pixel value to 0 and 1 with threshold of 50
         threshold = 50
-        segm = segm.point(lambda p: p > threshold and 1)
         segm = np.array(segm)
+        segm = np.where(segm<=threshold, 0, segm)
+        segm = np.where(segm>threshold, 1, segm)
 
         # convert all pixel value to 0 and 1 with threshold of 1
         # segm = np.array(segm)

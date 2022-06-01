@@ -27,10 +27,12 @@ for img in img_path:
     new_img.save(f'watermark_data/new_{img}')
 
     threshold = 50
-    new_mask_arr = mask_img.point(lambda p: p > threshold and 255)
+    new_mask_arr = np.where(mask_arr<=threshold, 0, mask_arr)
+    new_mask_arr = np.where(new_mask_arr>threshold, 255, new_mask_arr)
     print(f"(Cond Mask) Min: {np.min(new_mask_arr)}, Max: {np.max(new_mask_arr)}, Unique: {np.unique(new_mask_arr)}\n")
 
-    new_mask_arr.save(f'watermark_data/cond_{img}')
+    new_img = Image.fromarray(new_mask_arr)
+    new_img.save(f'watermark_data/cond_{img}')
 
 # threshold = 2
 # new_img = new_mask_img.convert('L').point(lambda p: p > threshold and 1)

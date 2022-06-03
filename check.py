@@ -12,27 +12,49 @@ img_path = [
     'batdongsan_1.png'
 ]
 
+def expand_to_rectangle_box(segm_arr):
+    print("Expand watermark into rectangle box")
+    new_segm = segm_arr.copy()
+
+    x_amax_value = np.amax(new_segm, axis=0)
+    y_amax_value = np.amax(new_segm, axis=1)
+
+    x_index_neighbour_diff = np.where(x_amax_value[:-1] != x_amax_value[1:])[0]
+    y_index_neighbour_diff = np.where(y_amax_value[:-1] != y_amax_value[1:])[0]
+
+    x_index_coords = x_index_neighbour_diff.reshape((-1, 2))
+    y_index_coords = y_index_neighbour_diff.reshape((-1, 2))
+
+    for i in range(len(x_index_coords)):
+        min_x, max_x = x_index_coords[i]
+        min_y, max_y = y_index_coords[i]
+
+        new_segm[min_y+1:max_y+1, min_x+1:max_x+1] = 255
+
+    return new_segm
+
+def segm_transform(segm):
+    segm = np.array(segm)
+    print(f"(Segm) Min: {np.min(segm)}, Max: {np.max(segm)}, Unique: {np.unique(segm)}\n")
+
+    threshold = 1
+    new_segm = np.where(segm<threshold, 0, segm)
+    new_segm = np.where(new_segm>=threshold, 255, new_segm)
+    print(f"(New Segm) Min: {np.min(new_segm)}, Max: {np.max(new_segm)}, Unique: {np.unique(new_segm)}\n")
+
+    return new_segm
+
 for img in img_path:
     print(f'Image {img}\n')
     mask_path = os.path.join(root_dataset, img)
     mask_img = Image.open(mask_path).convert('L')
 
-    mask_arr = np.array(mask_img)
-    print(f"(Mask) Min: {np.min(mask_arr)}, Max: {np.max(mask_arr)}, Unique: {np.unique(mask_arr)}\n")
+    new_mask = segm_transform(mask_img)
 
-    new_mask_arr = np.where(mask_arr>=1, 255, mask_arr)
-    print(f"(New Mask) Min: {np.min(new_mask_arr)}, Max: {np.max(new_mask_arr)}, Unique: {np.unique(new_mask_arr)}\n")
-
-    new_img = Image.fromarray(new_mask_arr)
+    new_img = Image.fromarray(new_mask)
     new_img.save(f'watermark_data/new_{img}')
 
-    threshold = 50
-    new_mask_arr = np.where(mask_arr<=threshold, 0, mask_arr)
-    new_mask_arr = np.where(new_mask_arr>threshold, 255, new_mask_arr)
-    print(f"(Cond Mask) Min: {np.min(new_mask_arr)}, Max: {np.max(new_mask_arr)}, Unique: {np.unique(new_mask_arr)}\n")
+    new_rectangle_segm = expand_to_rectangle_box(new_mask)
 
-    new_img = Image.fromarray(new_mask_arr)
-    new_img.save(f'watermark_data/cond_{img}')
-
-# threshold = 2
-# new_img = new_mask_img.convert('L').point(lambda p: p > threshold and 1)
+    new_rectangle_img = Image.fromarray(new_rectangle_segm)
+    new_rectangle_img.save(f'watermark_data/rectangle_{img}')

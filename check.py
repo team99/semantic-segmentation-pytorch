@@ -6,10 +6,16 @@ from PIL import Image
 from pdb import set_trace
 
 root_dataset = 'watermark_data/vietnam/annotations/training'
+save_directory = 'watermark_data/vietnam/check'
 
 img_path = [
     'chotot_1.png',
-    'batdongsan_1.png'
+    'batdongsan_1.png',
+    'batdongsan_2.png',
+    'batdongsan_3.png',
+    'batdongsan_4.png',
+    'batdongsan_5.png',
+    'batdongsan_6.png',
 ]
 
 def expand_to_rectangle_box(segm_arr):
@@ -52,9 +58,9 @@ for img in img_path:
     new_mask = segm_transform(mask_img)
 
     new_img = Image.fromarray(new_mask)
-    new_img.save(f'watermark_data/new_{img}')
+    new_img.save(f'{save_directory}/new_{img}')
 
     new_rectangle_segm = expand_to_rectangle_box(new_mask)
 
     new_rectangle_img = Image.fromarray(new_rectangle_segm)
-    new_rectangle_img.save(f'watermark_data/rectangle_{img}')
+    new_rectangle_img.save(f'{save_directory}/rectangle_{img}')

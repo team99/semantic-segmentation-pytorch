@@ -22,20 +22,22 @@ def expand_to_rectangle_box(segm_arr):
     print("Expand watermark into rectangle box")
     new_segm = segm_arr.copy()
 
+    # Scan through x-axis for sudden pixel value change from 0-255 / 255-0
     x_amax_value = np.amax(new_segm, axis=0)
-    y_amax_value = np.amax(new_segm, axis=1)
-
     x_index_neighbour_diff = np.where(x_amax_value[:-1] != x_amax_value[1:])[0]
-    y_index_neighbour_diff = np.where(y_amax_value[:-1] != y_amax_value[1:])[0]
+    x_index_coords = x_index_neighbour_diff.reshape((-1, 2)) # Pair into 2-index tuple
 
-    x_index_coords = x_index_neighbour_diff.reshape((-1, 2))
-    y_index_coords = y_index_neighbour_diff.reshape((-1, 2))
+    # Iterate through each pair of x-indices
+    for (min_x, max_x) in x_index_coords:
+        # Scan through y-axis for sudden pixel value change from 0-255 / 255-0
+        y_amax_value = np.amax(new_segm[:, min_x+1:max_x+1], axis=1)
+        y_index_neighbour_diff = np.where(y_amax_value[:-1] != y_amax_value[1:])[0]
+        y_index_coords = y_index_neighbour_diff.reshape((-1, 2))
 
-    for i in range(len(x_index_coords)):
-        min_x, max_x = x_index_coords[i]
-        min_y, max_y = y_index_coords[i]
-
-        new_segm[min_y+1:max_y+1, min_x+1:max_x+1] = 255
+        # Iterate through each pair of y-indices
+        for (min_y, max_y) in y_index_coords:
+            # Update value of the area within x-y coordinates into 255
+            new_segm[min_y+1:max_y+1, min_x+1:max_x+1] = 255
 
     return new_segm
 

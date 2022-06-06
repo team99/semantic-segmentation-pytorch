@@ -20,6 +20,23 @@ from PIL import Image
 from tqdm import tqdm
 
 colors = loadmat('data/color150.mat')['colors']
+names = {}
+with open('data/object150_info.csv') as f:
+    reader = csv.reader(f)
+    next(reader)
+    for row in reader:
+        names[int(row[0])] = row[5].split(";")[0]
+
+non_watermark_color = [0,0,0] # black color
+watermark_color = [255,255,255] # white color
+
+# Add non watermark name and color as first index (0)
+colors[0] = non_watermark_color
+names[1] = 'non_watermark'
+
+# Add watermark name and color as second index (0)
+colors[1] = watermark_color
+names[2] = 'watermark'
 
 
 def visualize_result(data, pred, dir_result):
@@ -82,7 +99,8 @@ def evaluate(segmentation_module, loader, cfg, gpu_id, result_queue):
 
 
 def worker(cfg, gpu_id, start_idx, end_idx, result_queue):
-    torch.cuda.set_device(gpu_id)
+    if not torch.cuda.is_available():
+        torch.set_num_threads(1)
 
     # Dataset and Loader
     dataset_val = ValDataset(
@@ -113,7 +131,10 @@ def worker(cfg, gpu_id, start_idx, end_idx, result_queue):
 
     segmentation_module = SegmentationModule(net_encoder, net_decoder, crit)
 
-    segmentation_module.cuda()
+    if torch.cuda.is_available():
+        segmentation_module.cuda()
+    else:
+        segmentation_module.cpu()
 
     # Main loop
     evaluate(segmentation_module, loader_val, cfg, gpu_id, result_queue)
@@ -160,10 +181,10 @@ def main(cfg, gpus):
     # summary
     iou = intersection_meter.sum / (union_meter.sum + 1e-10)
     for i, _iou in enumerate(iou):
-        print('class [{}], IoU: {:.4f}'.format(i, _iou))
+        print('\nclass [{}], IoU: {:.4f}'.format(names[i], _iou))
 
     print('[Eval Summary]:')
-    print('Mean IoU: {:.4f}, Accuracy: {:.2f}%'
+    print('Mean IoU: {:.4f}, Accuracy: {:.2f}%\n'
           .format(iou.mean(), acc_meter.average()*100))
 
     print('Evaluation Done!')

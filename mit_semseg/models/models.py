@@ -58,7 +58,8 @@ class SegmentationModule(SegmentationModuleBase):
 
             acc = self.pixel_acc(pred, seg_label)
             # Calculate iou when num class is available
-            iou = self.iou(pred, seg_label, self.num_class) if self.num_class else None
+            _, pred_iou = torch.max(pred, dim=1)
+            iou = self.iou(pred_iou, seg_label, self.num_class) if self.num_class else None
 
             return loss, acc, iou
         # inference

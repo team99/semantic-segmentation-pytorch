@@ -67,12 +67,12 @@ def train(segmentation_module, iterator, optimizers, history, epoch, cfg):
         # calculate accuracy, and display
         if i % cfg.TRAIN.disp_iter == 0:
             print('Epoch: [{}][{}/{}], lr_encoder: {:.6f}, lr_decoder: {:.6f}, '
-                  'IoU Non-watermark: {:.4f}, IoU Watermark: {:.4f}, Mean IoU: {:.4f}, '
-                  'Avg. IoU: {:.4f}, Avg. Accuracy: {:4.2f}, Avg. Loss: {:.6f}'
+                  'IoU Non-watermark: {:.4f}, IoU Watermark: {:.4f},'
+                  'Mean IoU: {:.4f}, Mean Accuracy: {:4.2f}, Mean Loss: {:.6f}'
                   .format(epoch, i, cfg.TRAIN.epoch_iters,
                           cfg.TRAIN.running_lr_encoder, cfg.TRAIN.running_lr_decoder,
-                          iou[0], iou[1], iou.mean(),
-                          ave_iou.average(), ave_acc.average(), ave_total_loss.average()))
+                          iou[0], iou[1], ave_iou.average(),
+                          ave_acc.average(), ave_total_loss.average()))
 
             fractional_epoch = epoch - 1 + 1. * i / cfg.TRAIN.epoch_iters
             history['train']['epoch'].append(fractional_epoch)

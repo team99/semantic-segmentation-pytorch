@@ -181,7 +181,7 @@ def main(cfg, gpus):
     # summary
     iou = intersection_meter.sum / (union_meter.sum + 1e-10)
     for i, _iou in enumerate(iou):
-        print('\nclass [{}], IoU: {:.4f}'.format(names[i], _iou))
+        print('\nclass [{}], IoU: {:.4f}'.format(names[i+1], _iou))
 
     print('[Eval Summary]:')
     print('Mean IoU: {:.4f}, Accuracy: {:.2f}%\n'

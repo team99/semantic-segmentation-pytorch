@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from . import resnet, resnext, mobilenet, hrnet
 from mit_semseg.lib.nn import SynchronizedBatchNorm2d
+from mit_semseg.utils import intersectionAndUnion
 BatchNorm2d = SynchronizedBatchNorm2d
 
 
@@ -17,14 +18,24 @@ class SegmentationModuleBase(nn.Module):
         acc = acc_sum.float() / (pixel_sum.float() + 1e-10)
         return acc
 
+    def iou(self, pred, label, num_class):
+        intersection, union = intersectionAndUnion(
+            pred.detach().numpy(),
+            label,
+            num_class
+        )
+        iou = intersection / (union + 1e-10)
+        return iou
+
 
 class SegmentationModule(SegmentationModuleBase):
-    def __init__(self, net_enc, net_dec, crit, deep_sup_scale=None):
+    def __init__(self, net_enc, net_dec, crit, deep_sup_scale=None, num_class=None):
         super(SegmentationModule, self).__init__()
         self.encoder = net_enc
         self.decoder = net_dec
         self.crit = crit
         self.deep_sup_scale = deep_sup_scale
+        self.num_class = num_class
 
     def forward(self, feed_dict, *, segSize=None):
         # training
@@ -46,7 +57,10 @@ class SegmentationModule(SegmentationModuleBase):
                 loss = loss + loss_deepsup * self.deep_sup_scale
 
             acc = self.pixel_acc(pred, seg_label)
-            return loss, acc
+            # Calculate iou when num class is available
+            iou = self.iou(pred, seg_label, self.num_class) if self.num_class else None
+
+            return loss, acc, iou
         # inference
         else:
             img_data = feed_dict['img_data']

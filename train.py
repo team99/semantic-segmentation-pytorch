@@ -45,9 +45,10 @@ def train(segmentation_module, iterator, optimizers, history, epoch, cfg):
         adjust_learning_rate(optimizers, cur_iter, cfg)
 
         # forward pass
-        loss, acc = segmentation_module(batch_data)
+        loss, acc, iou = segmentation_module(batch_data)
         loss = loss.mean()
         acc = acc.mean()
+        iou = iou.mean()
 
         # Backward
         loss.backward()
@@ -66,11 +67,11 @@ def train(segmentation_module, iterator, optimizers, history, epoch, cfg):
         if i % cfg.TRAIN.disp_iter == 0:
             print('Epoch: [{}][{}/{}], Time: {:.2f}, Data: {:.2f}, '
                   'lr_encoder: {:.6f}, lr_decoder: {:.6f}, '
-                  'Accuracy: {:4.2f}, Loss: {:.6f}'
+                  'Mean Accuracy: {:4.2f}, Mean Loss: {:.6f}, Mean IoU: {:.4f}'
                   .format(epoch, i, cfg.TRAIN.epoch_iters,
                           batch_time.average(), data_time.average(),
                           cfg.TRAIN.running_lr_encoder, cfg.TRAIN.running_lr_decoder,
-                          ave_acc.average(), ave_total_loss.average()))
+                          ave_acc.average(), ave_total_loss.average(), iou))
 
             fractional_epoch = epoch - 1 + 1. * i / cfg.TRAIN.epoch_iters
             history['train']['epoch'].append(fractional_epoch)
@@ -169,10 +170,10 @@ def main(cfg, gpus):
 
     if cfg.MODEL.arch_decoder.endswith('deepsup'):
         segmentation_module = SegmentationModule(
-            net_encoder, net_decoder, crit, cfg.TRAIN.deep_sup_scale)
+            net_encoder, net_decoder, crit, cfg.TRAIN.deep_sup_scale, num_class=cfg.DATASET.num_class)
     else:
         segmentation_module = SegmentationModule(
-            net_encoder, net_decoder, crit)
+            net_encoder, net_decoder, crit, num_class=cfg.DATASET.num_class)
 
     # Dataset and Loader
     dataset_train = TrainDataset(

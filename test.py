@@ -9,6 +9,7 @@ import torch.nn as nn
 from scipy.io import loadmat
 import csv
 # Our libs
+from mit_semseg.config import cfg
 from mit_semseg.dataset import TestDataset
 from mit_semseg.models import ModelBuilder, SegmentationModule
 from mit_semseg.utils import colorEncode, find_recursive, setup_logger
@@ -16,7 +17,6 @@ from mit_semseg.lib.nn import user_scattered_collate, async_copy_to
 from mit_semseg.lib.utils import as_numpy
 from PIL import Image
 from tqdm import tqdm
-from mit_semseg.config import cfg
 
 colors = loadmat('data/color150.mat')['colors']
 names = {}

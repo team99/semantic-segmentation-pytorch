@@ -9,6 +9,7 @@ import math
 import torch
 import torch.nn as nn
 from scipy.io import loadmat
+import csv
 # Our libs
 from mit_semseg.config import cfg
 from mit_semseg.dataset import ValDataset
@@ -37,7 +38,6 @@ names[1] = 'non_watermark'
 # Add watermark name and color as second index (0)
 colors[1] = watermark_color
 names[2] = 'watermark'
-
 
 def visualize_result(data, pred, dir_result):
     (img, seg, info) = data

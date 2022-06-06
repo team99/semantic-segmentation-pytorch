@@ -217,7 +217,16 @@ def main(cfg, gpus):
     optimizers = create_optimizers(nets, cfg)
 
     # Main loop
-    history = {'train': {'epoch': [], 'loss': [], 'acc': []}}
+    history = {
+        'train': {
+            'epoch': [],
+            'loss': [],
+            'acc': [],
+            'iou_non_watermark': [],
+            'iou_watermark': [],
+            'mean_iou': [],
+        }
+    }
 
     for epoch in range(cfg.TRAIN.start_epoch, cfg.TRAIN.num_epoch):
         train(segmentation_module, iterator_train, optimizers, history, epoch+1, cfg)

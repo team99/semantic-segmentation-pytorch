@@ -20,8 +20,8 @@ class SegmentationModuleBase(nn.Module):
 
     def iou(self, pred, label, num_class):
         intersection, union = intersectionAndUnion(
-            pred.detach().numpy(),
-            label,
+            pred.cpu().detach().numpy(),
+            label.cpu(),
             num_class
         )
         iou = intersection / (union + 1e-10)

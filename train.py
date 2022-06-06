@@ -22,6 +22,7 @@ def train(segmentation_module, iterator, optimizers, history, epoch, cfg):
     data_time = AverageMeter()
     ave_total_loss = AverageMeter()
     ave_acc = AverageMeter()
+    ave_iou = AverageMeter()
 
     segmentation_module.train(not cfg.TRAIN.fix_bn)
 
@@ -48,7 +49,6 @@ def train(segmentation_module, iterator, optimizers, history, epoch, cfg):
         loss, acc, iou = segmentation_module(batch_data)
         loss = loss.mean()
         acc = acc.mean()
-        iou = iou.mean()
 
         # Backward
         loss.backward()
@@ -62,21 +62,25 @@ def train(segmentation_module, iterator, optimizers, history, epoch, cfg):
         # update average loss and acc
         ave_total_loss.update(loss.data.item())
         ave_acc.update(acc.data.item()*100)
+        ave_iou.update(iou.mean())
 
         # calculate accuracy, and display
         if i % cfg.TRAIN.disp_iter == 0:
-            print('Epoch: [{}][{}/{}], Time: {:.2f}, Data: {:.2f}, '
-                  'lr_encoder: {:.6f}, lr_decoder: {:.6f}, '
-                  'Mean Accuracy: {:4.2f}, Mean Loss: {:.6f}, Mean IoU: {:.4f}'
+            print('Epoch: [{}][{}/{}], lr_encoder: {:.6f}, lr_decoder: {:.6f}, '
+                  'IoU Non-watermark: {:.4f}, IoU Watermark: {:.4f}, Mean IoU: {:.4f}, '
+                  'Avg. IoU: {:.4f}, Avg. Accuracy: {:4.2f}, Avg. Loss: {:.6f}'
                   .format(epoch, i, cfg.TRAIN.epoch_iters,
-                          batch_time.average(), data_time.average(),
                           cfg.TRAIN.running_lr_encoder, cfg.TRAIN.running_lr_decoder,
-                          ave_acc.average(), ave_total_loss.average(), iou))
+                          iou[0], iou[1], iou.mean(),
+                          ave_iou.average(), ave_acc.average(), ave_total_loss.average()))
 
             fractional_epoch = epoch - 1 + 1. * i / cfg.TRAIN.epoch_iters
             history['train']['epoch'].append(fractional_epoch)
             history['train']['loss'].append(loss.data.item())
             history['train']['acc'].append(acc.data.item())
+            history['train']['iou_non_watermark'].append(iou[0])
+            history['train']['iou_watermark'].append(iou[0])
+            history['train']['mean_iou'].append(iou.mean())
 
 
 def checkpoint(nets, history, cfg, epoch):

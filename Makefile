@@ -20,6 +20,14 @@ train_watermark_cpu:
 train_watermark_gpu:
 	python train.py --cfg config/$(CONFIG) --gpu $(GPU)
 
+##### EVALUATION #####
+eval_watermark_cpu:
+	python eval_multipro.py --cfg config/$(CONFIG)
+
+# Run with GPU
+eval_watermark_gpu:
+	python eval_multipro.py --cfg config/$(CONFIG) --gpu $(GPU)
+
 ##### TESTING #####
 # Only run this after you run training model script for watermark
 test_watermark_cpu:

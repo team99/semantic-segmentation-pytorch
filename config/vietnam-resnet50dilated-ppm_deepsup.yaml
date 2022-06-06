@@ -33,7 +33,7 @@ TRAIN:
 
 VAL:
   visualize: False
-  checkpoint: "epoch_1.pth"
+  checkpoint: "epoch_10.pth"
 
 TEST:
   checkpoint: "epoch_10.pth"

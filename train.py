@@ -67,7 +67,7 @@ def train(segmentation_module, iterator, optimizers, history, epoch, cfg):
         # calculate accuracy, and display
         if i % cfg.TRAIN.disp_iter == 0:
             print('Epoch: [{}][{}/{}], lr_encoder: {:.6f}, lr_decoder: {:.6f}, '
-                  'IoU Non-watermark: {:.4f}, IoU Watermark: {:.4f},'
+                  'IoU Non-watermark: {:.4f}, IoU Watermark: {:.4f}, '
                   'Mean IoU: {:.4f}, Mean Accuracy: {:4.2f}, Mean Loss: {:.6f}'
                   .format(epoch, i, cfg.TRAIN.epoch_iters,
                           cfg.TRAIN.running_lr_encoder, cfg.TRAIN.running_lr_decoder,

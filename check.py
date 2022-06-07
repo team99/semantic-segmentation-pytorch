@@ -18,8 +18,39 @@ img_path = [
     'batdongsan_6.png',
 ]
 
-def expand_to_rectangle_box(segm_arr):
-    print("Expand watermark into rectangle box")
+watermark_dimension = {
+    'chotot': {
+        'W': 144,
+        'H': 48,
+    },
+    'batdongsan_1': {
+        'W': 55,
+        'H': 26,
+    },
+    'batdongsan_2': {
+        'W': 46,
+        'H': 21,
+    },
+    'batdongsan_3': {
+        'W': 72,
+        'H': 32,
+    },
+    'batdongsan_4': {
+        'W': 57,
+        'H': 26,
+    },
+    'batdongsan_5': {
+        'W': 114,
+        'H': 49,
+    },
+    'batdongsan_6': {
+        'W': 72,
+        'H': 32,
+    },
+}
+
+def expand_to_rectangle_box(segm_arr, watermark_type=None):
+    print(f"Expand watermark {watermark_type} into rectangle box")
     new_segm = segm_arr.copy()
 
     # Scan through x-axis for sudden pixel value change from 0-255 / 255-0
@@ -43,17 +74,18 @@ def expand_to_rectangle_box(segm_arr):
 
 def segm_transform(segm):
     segm = np.array(segm)
-    print(f"(Segm) Min: {np.min(segm)}, Max: {np.max(segm)}, Unique: {np.unique(segm)}\n")
+    # print(f"(Segm) Min: {np.min(segm)}, Max: {np.max(segm)}, Unique: {np.unique(segm)}\n")
 
     threshold = 1
     new_segm = np.where(segm<threshold, 0, segm)
     new_segm = np.where(new_segm>=threshold, 255, new_segm)
-    print(f"(New Segm) Min: {np.min(new_segm)}, Max: {np.max(new_segm)}, Unique: {np.unique(new_segm)}\n")
+    # print(f"(New Segm) Min: {np.min(new_segm)}, Max: {np.max(new_segm)}, Unique: {np.unique(new_segm)}\n")
 
     return new_segm
 
 for img in img_path:
     print(f'Image {img}\n')
+    watermark_type = img.split('_')[0]
     mask_path = os.path.join(root_dataset, img)
     mask_img = Image.open(mask_path).convert('L')
 
@@ -62,7 +94,7 @@ for img in img_path:
     new_img = Image.fromarray(new_mask)
     new_img.save(f'{save_directory}/new_{img}')
 
-    new_rectangle_segm = expand_to_rectangle_box(new_mask)
+    new_rectangle_segm = expand_to_rectangle_box(new_mask, watermark_type)
 
     new_rectangle_img = Image.fromarray(new_rectangle_segm)
     new_rectangle_img.save(f'{save_directory}/rectangle_{img}')

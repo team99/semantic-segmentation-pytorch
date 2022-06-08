@@ -19,9 +19,9 @@ TRAIN:
   num_epoch: 30
   start_epoch: 0
   epoch_iters: 20
-  optim: "Adam"
-  lr_encoder: 0.0001
-  lr_decoder: 0.02
+  optim: "SGD"
+  lr_encoder: 0.05
+  lr_decoder: 0.05
   lr_pow: 0.9
   beta1: 0.9
   weight_decay: 1e-4

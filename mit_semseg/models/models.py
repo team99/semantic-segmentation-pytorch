@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from . import resnet, resnext, mobilenet, hrnet
 from mit_semseg.lib.nn import SynchronizedBatchNorm2d
+from mit_semseg.lib.utils import as_numpy
 from mit_semseg.utils import intersectionAndUnion
 BatchNorm2d = SynchronizedBatchNorm2d
 
@@ -19,8 +20,9 @@ class SegmentationModuleBase(nn.Module):
         return acc
 
     def iou(self, pred, label, num_class):
+        _, preds = torch.max(pred, dim=1)
         intersection, union = intersectionAndUnion(
-            pred.cpu().detach().numpy(),
+            as_numpy(preds.squeeze(0).cpu()),
             label.cpu(),
             num_class
         )
@@ -58,7 +60,6 @@ class SegmentationModule(SegmentationModuleBase):
 
             acc = self.pixel_acc(pred, seg_label)
             # Calculate iou when num class is available
-            _, pred_iou = torch.max(pred, dim=1)
             iou = self.iou(pred_iou, seg_label, self.num_class) if self.num_class else None
 
             return loss, acc, iou

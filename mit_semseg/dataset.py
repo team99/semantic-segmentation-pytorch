@@ -64,18 +64,19 @@ class BaseDataset(torch.utils.data.Dataset):
         # we need to change it to 0 to 1
 
         # convert all pixel value to 0 and 1 with threshold of 50
-        threshold = 50
-        segm = np.array(segm)
-        segm = np.where(segm<=threshold, 0, segm)
-        segm = np.where(segm>threshold, 1, segm)
+        # threshold = 50
+        # segm = np.array(segm)
+        # segm = np.where(segm<=threshold, 0, segm)
+        # segm = np.where(segm>threshold, 1, segm)
+
+        # segm = torch.from_numpy(segm).long()
 
         # convert all pixel value to 0 and 1 with threshold of 1
-        # segm = np.array(segm)
-        # segm = np.where(segm>=1, 1, segm)
+        segm = np.array(segm)
+        segm = np.where(segm>=1, 1, segm)
 
-        segm = torch.from_numpy(segm).long()
         # Original
-        # segm = torch.from_numpy(segm).long() - 1
+        segm = torch.from_numpy(segm).long() - 1
         return segm
 
     # Round x to the nearest multiple of p and x' >= x

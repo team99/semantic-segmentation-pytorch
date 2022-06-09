@@ -67,8 +67,8 @@ def train(segmentation_module, iterator, optimizers, history, epoch, cfg):
         # calculate accuracy, and display
         if i % cfg.TRAIN.disp_iter == 0:
             print('Epoch: [{}][{}/{}], lr_encoder: {:.6f}, lr_decoder: {:.6f}, '
-                  'IoU Non-watermark: {:.4f}, IoU Watermark: {:.4f}, '
-                  'Mean IoU: {:.4f}, Mean Accuracy: {:4.2f}, Mean Loss: {:.6f}'
+                  'IoU Non-watermark: {:.6f}, IoU Watermark: {:.6f}, '
+                  'Mean IoU: {:.6f}, Mean Accuracy: {:4.2f}, Mean Loss: {:.6f}'
                   .format(epoch, i, cfg.TRAIN.epoch_iters,
                           cfg.TRAIN.running_lr_encoder, cfg.TRAIN.running_lr_decoder,
                           iou[0], iou[1], ave_iou.average(),
@@ -79,7 +79,7 @@ def train(segmentation_module, iterator, optimizers, history, epoch, cfg):
             history['train']['loss'].append(loss.data.item())
             history['train']['acc'].append(acc.data.item())
             history['train']['iou_non_watermark'].append(iou[0])
-            history['train']['iou_watermark'].append(iou[0])
+            history['train']['iou_watermark'].append(iou[1])
             history['train']['mean_iou'].append(iou.mean())
 
 

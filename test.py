@@ -29,16 +29,13 @@ with open('data/object150_info.csv') as f:
 non_watermark_color = [0,0,0] # black color
 watermark_color = [255,255,255] # white color
 
-colors[0] = watermark_color
-names[1] = 'watermark'
+# Add non watermark name and color as first index (0)
+colors[0] = non_watermark_color
+names[1] = 'non_watermark'
 
-# # Add non watermark name and color as first index (0)
-# colors[0] = non_watermark_color
-# names[1] = 'non_watermark'
-
-# # Add watermark name and color as second index (0)
-# colors[1] = watermark_color
-# names[2] = 'watermark'
+# Add watermark name and color as second index (0)
+colors[1] = watermark_color
+names[2] = 'watermark'
 
 def visualize_result(data, pred, cfg):
     (img, info) = data

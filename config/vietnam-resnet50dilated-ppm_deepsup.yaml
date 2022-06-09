@@ -1,7 +1,7 @@
 DATASET:
   root_dataset: "."
-  list_train: "watermark_data/vietnam_training.odgt"
-  list_val: "watermark_data/vietnam_validation.odgt"
+  list_train: "watermark_data/vietnam_training_1.odgt"
+  list_val: "watermark_data/vietnam_validation_1.odgt"
   num_class: 1
   imgSizes: (300, 375, 450, 525, 600)
   imgMaxSize: 1000
@@ -16,9 +16,9 @@ MODEL:
 
 TRAIN:
   batch_size_per_gpu: 2
-  num_epoch: 2
+  num_epoch: 30
   start_epoch: 0
-  epoch_iters: 5000
+  epoch_iters: 20
   optim: "SGD"
   lr_encoder: 0.02
   lr_decoder: 0.02
@@ -32,11 +32,11 @@ TRAIN:
   seed: 304
 
 VAL:
-  visualize: False
-  checkpoint: "epoch_2.pth"
+  visualize: True
+  checkpoint: "epoch_30.pth"
 
 TEST:
-  checkpoint: "epoch_2.pth"
+  checkpoint: "epoch_30.pth"
   result: "watermark_data/vietnam/output/validation"
 
 DIR: "ckpt/vietnam-resnet50dilated-ppm_deepsup"

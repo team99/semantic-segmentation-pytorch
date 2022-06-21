@@ -1,6 +1,10 @@
 # -*- coding: utf8 -*-
 
+################################################################
 import torch.cuda as cuda
+################################################################
+# import torch.backends.mps as mps
+################################################################
 import torch.nn as nn
 import torch
 import collections
@@ -15,7 +19,11 @@ def async_copy_to(obj, dev, main_stream=None):
         if dev is None:
             v = obj.cpu()
         else:
+            ################################################################
             v = obj.cuda(dev, non_blocking=True)
+            ################################################################
+            # v = obj.mps(dev, non_blocking=True)
+            ################################################################
 
         if main_stream is not None:
             v.data.record_stream(main_stream)
@@ -77,8 +85,13 @@ def _async_copy(inputs, device_ids):
 
     outputs = []
     for i, dev in zip(inputs, device_ids):
+        ################################################################
         with cuda.device(dev):
             outputs.append(async_copy_to(i, dev))
+        ################################################################
+        # with mps.device(dev):
+        #     outputs.append(async_copy_to(i, dev))
+        ################################################################
 
     return tuple(outputs)
 
@@ -91,12 +104,19 @@ def _async_copy_stream(inputs, device_ids):
     outputs = []
     streams = [_get_stream(d) for d in device_ids]
     for i, dev, stream in zip(inputs, device_ids, streams):
+        ################################################################
         with cuda.device(dev):
             main_stream = cuda.current_stream()
             with cuda.stream(stream):
                 outputs.append(async_copy_to(i, dev, main_stream=main_stream))
             main_stream.wait_stream(stream)
-
+        ################################################################
+        # with mps.device(dev):
+        #     main_stream = mps.current_stream()
+        #     with mps.stream(stream):
+        #         outputs.append(async_copy_to(i, dev, main_stream=main_stream))
+        #     main_stream.wait_stream(stream)
+        ################################################################
     return outputs
 
 
@@ -110,7 +130,13 @@ def _get_stream(device):
     global _streams
     if device == -1:
         return None
+    ################################################################
     if _streams is None:
         _streams = [None] * cuda.device_count()
     if _streams[device] is None: _streams[device] = cuda.Stream(device)
+    ################################################################
+    # if _streams is None:
+    #     _streams = [None] * mps.device_count()
+    # if _streams[device] is None: _streams[device] = mps.Stream(device)
+    ################################################################
     return _streams[device]

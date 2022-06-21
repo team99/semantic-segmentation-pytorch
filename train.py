@@ -144,8 +144,13 @@ def adjust_learning_rate(optimizers, cur_iter, cfg):
 
 
 def main(cfg, gpus):
+    ################################################################
     if not torch.cuda.is_available():
         torch.set_num_threads(1)
+    ################################################################
+    # if not torch.backends.mps.is_available():
+    #     torch.set_num_threads(1)
+    ################################################################
 
     # Network Builders
     net_encoder = ModelBuilder.build_encoder(
@@ -195,8 +200,13 @@ def main(cfg, gpus):
         # For sync bn
         patch_replication_callback(segmentation_module)
 
+    ################################################################
     if torch.cuda.is_available():
         segmentation_module.cuda()
+    ################################################################
+    # if torch.backends.mps.is_available():
+    #     segmentation_module.mps()
+    ################################################################
     else:
         segmentation_module.cpu()
 
@@ -269,8 +279,11 @@ if __name__ == '__main__':
 
     # Parse gpu ids
     gpus = parse_devices(args.gpus)
+    print("gpus:", gpus)
     gpus = [x.replace('gpu', '') for x in gpus]
+    print("gpus:", gpus)
     gpus = [int(x) for x in gpus]
+    print("gpus:", gpus)
     num_gpus = len(gpus)
     cfg.TRAIN.batch_size = num_gpus * cfg.TRAIN.batch_size_per_gpu
 
@@ -281,4 +294,5 @@ if __name__ == '__main__':
     random.seed(cfg.TRAIN.seed)
     torch.manual_seed(cfg.TRAIN.seed)
 
+    print("gpus:", gpus)
     main(cfg, gpus)

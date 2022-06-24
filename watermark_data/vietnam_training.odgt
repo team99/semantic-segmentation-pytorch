@@ -4,4 +4,3 @@
 {"fpath_img": "watermark_data/vietnam/images/training/batdongsan_4.jpg", "fpath_segm": "watermark_data/vietnam/annotations/training/batdongsan_4.png", "width": 510, "height": 680}
 {"fpath_img": "watermark_data/vietnam/images/training/batdongsan_5.jpg", "fpath_segm": "watermark_data/vietnam/annotations/training/batdongsan_5.png", "width": 510, "height": 680}
 {"fpath_img": "watermark_data/vietnam/images/training/batdongsan_6.jpg", "fpath_segm": "watermark_data/vietnam/annotations/training/batdongsan_6.png", "width": 510, "height": 680}
-{"fpath_img": "watermark_data/vietnam/images/training/chotot_1.jpg", "fpath_segm": "watermark_data/vietnam/annotations/training/chotot_1.png", "width": 720, "height": 960}

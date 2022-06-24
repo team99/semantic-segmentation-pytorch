@@ -1,7 +1,7 @@
 DATASET:
   root_dataset: "."
-  list_train: "watermark_data/vietnam_training_1.odgt"
-  list_val: "watermark_data/vietnam_validation_1.odgt"
+  list_train: "watermark_data/vietnam_training.odgt"
+  list_val: "watermark_data/vietnam_validation.odgt"
   num_class: 2
   imgSizes: (300, 375, 450, 525, 600)
   imgMaxSize: 1000
@@ -27,7 +27,7 @@ TRAIN:
   weight_decay: 1e-4
   deep_sup_scale: 0.4
   fix_bn: False
-  workers: 16
+  workers: 2
   disp_iter: 1
   seed: 304
 

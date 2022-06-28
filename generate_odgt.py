@@ -3,7 +3,7 @@ import cv2
 import json
 
 def odgt(img_path):
-    seg_path = img_path.replace('images','annotations')
+    seg_path = img_path.replace('images','masks')
     seg_path = seg_path.replace('.jpg','.png')
 
     if os.path.exists(seg_path):
@@ -24,10 +24,10 @@ def odgt(img_path):
 
 if __name__ == "__main__":
     modes = ['training','validation']
-    custom_name = "vietnam_"
+    custom_name = "batdongsan_"
 
     for i, mode in enumerate(modes):
-        dir_path = f"watermark_data/vietnam/images/{mode}"
+        dir_path = f"watermark_data/batdongsan/images/{mode}"
         img_list = os.listdir(dir_path)
         img_list.sort()
         img_list = [os.path.join(dir_path, img) for img in img_list]

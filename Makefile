@@ -2,8 +2,11 @@ PYTHON = 3.7.13
 PIP = $(shell which pip3)
 WORKDIR = $(shell pwd)
 GPU = 1
-CKPT = vietnam-resnet50dilated-ppm_deepsup
+# CKPT = vietnam-resnet50dilated-ppm_deepsup
+CKPT = batdongsan-resnet50dilated-ppm_deepsup
 CONFIG = $(CKPT).yaml
+# TEST_DIR = watermark_data/vietnam/images/validation
+TEST_DIR = watermark_data/batdongsan/images/validation
 
 
 install:
@@ -32,12 +35,12 @@ eval_watermark_gpu:
 # Only run this after you run training model script for watermark
 test_watermark_cpu:
 	python test.py \
-		--imgs watermark_data/vietnam/images/validation \
+		--imgs $(TEST_DIR) \
 		--cfg config/$(CONFIG)
 
 # Run with GPU
 test_watermark_gpu:
 	python test.py \
-		--imgs watermark_data/vietnam/images/validation \
+		--imgs $(TEST_DIR) \
 		--cfg config/$(CONFIG) \
 		--gpu $(GPU)
